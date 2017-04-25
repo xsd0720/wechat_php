@@ -3,13 +3,12 @@ namespace app\mobileapi\controller;
 
 use \app\mobileapi\model\User;
 
-
-class Account
+class Account extends BaseController
 {
-    // public function _construct()
-    // {
-    //      $this->$constant = new Constant();
-    // }
+    public function _construct()
+    {
+
+    }
 
     public function index()
     {
@@ -19,20 +18,6 @@ class Account
     /* 登录 */
     public function login()
     {
-
-        if (!request()->isPost()) {
-            return json_encode([
-                "return_code" => config("REQUEST_METHOD_POST_NEED")[0],
-                "return_message" => config("REQUEST_METHOD_POST_NEED")[1]
-            ]);
-        }
-
-        if (!input('post.')) {
-            return json_encode([
-                "return_code" => config("REQUEST_NO_PARAMS")[0],
-                "return_message" => config("REQUEST_NO_PARAMS")[1]
-            ]);
-        }
 
         $username = input('?post.username') ? input('post.username') : '';
         if (!$username) {
@@ -84,19 +69,6 @@ class Account
     /* 注册 */
     public function register()
     {
-        if (!request()->isPost()) {
-            return json_encode([
-                "return_code" => config("REQUEST_METHOD_POST_NEED")[0],
-                "return_message" => config("REQUEST_METHOD_POST_NEED")[1]
-            ]);
-        }
-
-        if (!input('post.')) {
-            return json_encode([
-                "return_code" => config("REQUEST_NO_PARAMS")[0],
-                "return_message" => config("REQUEST_NO_PARAMS")[1]
-            ]);
-        }
         $mobile = input('?post.mobile') ? input('post.mobile') : '';
         if (!$mobile) {
             return json_encode([
@@ -160,19 +132,6 @@ class Account
     public function profile()
     {
 
-        if (!request()->isPost()) {
-            return json_encode([
-                "return_code" => config("REQUEST_METHOD_POST_NEED")[0],
-                "return_message" => config("REQUEST_METHOD_POST_NEED")[1]
-            ]);
-        }
-
-        if (!input('post.')) {
-            return json_encode([
-                "return_code" => config("REQUEST_NO_PARAMS")[0],
-                "return_message" => config("REQUEST_NO_PARAMS")[1]
-            ]);
-        }
         $mobile = input('?post.mobile') ? input('post.mobile') : '';
         if (!$mobile) {
             return json_encode([
@@ -199,12 +158,29 @@ class Account
     /* 修改密码 */
     public function update_pwd()
     {
+
         return "update_pwd";
     }
 
+//    public  function  signature_decorator($func)
+//    {
+//        function wrapper()
+//        {
+//            func();
+//        }
+//    }
     /* 更改头像 */
     public function changeheadpic()
     {
+
+        $mobile = input('?post.mobile') ? input('post.mobile') : '';
+        if (!$mobile) {
+            return json_encode([
+                "return_code" => config("MOBILE_INVALID")[0],
+                "return_message" => config("MOBILE_INVALID")[1]
+            ]);
+        }
+
         $file = request()->file('photos');
         $error = $file->getInfo()['error'];
 //        $error = $_FILES['file']['error']; // 如果$_FILES['file']['error']>0,表示文件上传失败
@@ -223,6 +199,10 @@ class Account
         }
         $info = $file->move($dir);
         $imagePath = str_replace('\\', '/', $info->getPathname());
+        $user = new User();
+        $user = $user->get(["mobile"=>$mobile]);
+        $user->profile->head_pic_url = $imagePath;
+        $user->profile->save();
         return json_encode([
 
             "return_code" => config("REQUEST_SUCCESED")[0],
@@ -233,19 +213,6 @@ class Account
 
     public function requestsns()
     {
-        if (!request()->isPost()) {
-            return json_encode([
-                "return_code" => config("REQUEST_METHOD_POST_NEED")[0],
-                "return_message" => config("REQUEST_METHOD_POST_NEED")[1]
-            ]);
-        }
-
-        if (!input('post.')) {
-            return json_encode([
-                "return_code" => config("REQUEST_NO_PARAMS")[0],
-                "return_message" => config("REQUEST_NO_PARAMS")[1]
-            ]);
-        }
 
         $mobile = input('?post.mobile') ? input('post.mobile') : '';
         if (!$mobile) {
@@ -277,19 +244,6 @@ class Account
 
     public function checkvcode()
     {
-        if (!request()->isPost()) {
-            return json_encode([
-                "return_code" => config("REQUEST_METHOD_POST_NEED")[0],
-                "return_message" => config("REQUEST_METHOD_POST_NEED")[1]
-            ]);
-        }
-
-        if (!input('post.')) {
-            return json_encode([
-                "return_code" => config("REQUEST_NO_PARAMS")[0],
-                "return_message" => config("REQUEST_NO_PARAMS")[1]
-            ]);
-        }
         $mobile = input('?post.mobile') ? input('post.mobile') : '';
         if (!$mobile) {
             return json_encode([
@@ -323,19 +277,7 @@ class Account
 
     public function toukan()
     {
-        if (!request()->isPost()) {
-            return json_encode([
-                "return_code" => config("REQUEST_METHOD_POST_NEED")[0],
-                "return_message" => config("REQUEST_METHOD_POST_NEED")[1]
-            ]);
-        }
 
-        if (!input('post.')) {
-            return json_encode([
-                "return_code" => config("REQUEST_NO_PARAMS")[0],
-                "return_message" => config("REQUEST_NO_PARAMS")[1]
-            ]);
-        }
         $mobile = input('?post.mobile') ? input('post.mobile') : '';
         if (!$mobile) {
             return json_encode([
